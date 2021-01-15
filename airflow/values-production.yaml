@@ -84,8 +84,8 @@ workerImage:
 ##
 git:
   registry: docker.io
-  repository: bitnami/git
-  tag: latest
+  repository: yuriowindiatmoko2401/git-repo-syncer
+  tag: v1.0
   pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
@@ -119,13 +119,13 @@ airflow:
   ## Enable in order to download DAG files from git repository.
   ##
   cloneDagFilesFromGit:
-    enabled: false
-    # repository:
-    # branch:
+    enabled: true
+    repository: git@deploy-key:Yuriowindiatmoko2401/airflow-dags.git
+    branch: master
     # interval:
   ## URL used to access to airflow web ui
   ##
-  baseUrl: http://airflow.local
+  baseUrl: http://127.0.0.1:8080
   ## Airflow worker component configuration
   worker:
     port: 8793
@@ -138,17 +138,17 @@ airflow:
     forcePassword: true
     ## Specify username to acccess web UI
     ##
-    username: user
+    username: foo
     ## Specify password to acccess web UI
     ##
-    # password:
+    password: bar
     ## Specify a fernet key to secure airflow connections
     ## Fernet key must be 32 url-safe base64-encoded bytes.
     ## More info at:
     ## - https://airflow.readthedocs.io/en/stable/howto/secure-connections.html
     ## - https://bcb.github.io/airflow/fernet-key
     ##
-    # fernetKey:
+    fernetKey: rFFZiXyYcMIuhhGnRrBR7K756QwuiuzHb9MAUsg9T_E=
     ## Use existing secret (ignores previous password and fernetKey)
     ##
     # existingSecret:
@@ -289,7 +289,7 @@ readinessProbe:
 postgresql:
   enabled: true
   postgresqlUsername: bn_airflow
-  #postgresqlPassword:
+  postgresqlPassword: airflow_password
   postgresqlDatabase: bitnami_airflow
 
 externalDatabase:
@@ -312,7 +312,7 @@ externalDatabase:
 ##
 redis:
   enabled: true
-  # password: ""
+  password: "redis_password"
 
 externalRedis:
   ## All of these values are only used when redis.enabled is set to false
