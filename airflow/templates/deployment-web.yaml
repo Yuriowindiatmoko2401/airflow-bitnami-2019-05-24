@@ -61,6 +61,20 @@ spec:
         ### ------- VOLUME MOUNTED BELOW ------- ###
         - name: repo-deploy-key
           mountPath: /home/helper/.deploy-key
+### ----- ADD NEW INITCONTAINER BELOW ----- ###
+      - name: copy-ssl-certs
+        image: busybox
+        command: 
+          - /bin/sh
+          - -c
+          - | 
+            cp /cloudsql/* /etc/cloudsql/;
+            chmod 0600 /etc/cloudsql/*
+        volumeMounts:
+          - name: cloudsql
+            mountPath: /cloudsql
+          - name: chmod-certs
+            mountPath: /etc/cloudsql
       containers:
       - name: git-repo-syncer
         image: "{{ template "git.image" . }}"
@@ -222,6 +236,9 @@ spec:
           mountPath: /opt/bitnami/airflow/airflow.cfg
           subPath: airflow.cfg
         {{- end }}
+### ----- ADD VOLUMEMOUNT BELOW ----- ###          
+        - name: chmod-certs
+          mountPath: /etc/cloudsql
         resources:
 {{ toYaml .Values.resources | indent 10 }}
       volumes:
@@ -248,3 +265,9 @@ spec:
         configMap:
           name: {{ .Values.airflow.configurationConfigMap }}
       {{- end }}
+### ----- ADD VOLUMES BELOW ----- ###      
+      - name: cloudsql
+        secret:
+          secretName: cloudsql-certs
+      - name: chmod-certs
+        emptyDir: {}
